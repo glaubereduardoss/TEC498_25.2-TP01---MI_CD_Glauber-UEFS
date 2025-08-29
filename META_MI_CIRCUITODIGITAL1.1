@@ -1,0 +1,33 @@
+module somadorUM( S, Cout, A, B, Cin);
+   input A, B, Cin;
+   output S, Cout;
+   wire T1, T2, T3;
+
+   xor Xor0(T1, A, B);
+   and And0(T2, A, B);
+   and And1(T3, T1, Cin);
+   or Or0(Cout, T2, T3);
+   xor Xor1 (S, T1, Cin);
+endmodule
+
+module Verilog3(S1, S2, Cout, C, D, E, F, Cin);
+    input C, D, E, F, Cin;
+    output S1, S2, Cout;
+    wire Cin_cout;
+    
+    somadorUM unique_name (
+    .A (C),
+    .B (D),
+    .Cout (Cin_cout),
+    .Cin (Cin),
+    .S (S1)
+    );
+    
+    somadorUM abc (
+    .A (E),
+    .B (F),
+    .Cout (Cout),
+    .Cin (Cin_cout),
+    .S (S2)
+    );
+endmodule
