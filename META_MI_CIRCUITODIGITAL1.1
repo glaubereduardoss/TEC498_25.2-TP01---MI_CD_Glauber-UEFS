@@ -4,80 +4,90 @@ module somadorUM( S, Cout, A, B, Cin);
 	wire T1, T2, T3;
 	
 	xor Xor0(T1, A, B);
-	and And0(T2, A, b);
+	and And0(T2, A, B);
 	and And1(T3, T1, Cin);
 	or Or0(Cout, T2, T3);
 	xor Xor1(S, T1, Cin);
 endmodule
 
-module somadorQuatro( S1, S2, S3, S4, Cout, A1, B1, A2, B2, A3, C3, A4, B4, Cin);
-	input C, D, E, F, G, H, I, J, Cin;
-	output S1, S2, S3, S4, Cout;
-	wire CC;
-	
-	somadorUM um (
-	.A (C),
-	.B (D),
-	.Cout (CC),
-	.Cin (Cin),
-	.S (S1),
-	);
-	somadorUM dois (
-	.A (E),
-	.B (F),
-	.Cout (CC),
-	.Cin (Cin),
-	.S (S2),
-	);
-	somadorUM tres (
-	.A (G),
-	.B (H),
-	.Cout (CC),
-	.Cin (Cin),
-	.S (S3),
-	);
-	somadorUM quatro (
-	.A (I),
-	.B (J),
-	.Cout (CC),
-	.Cin (Cin),
-	.S (S4),
-	);
+
+module somadorQuatro(
+    input A1, B1, A2, B2, A3, B3, A4, B4,
+    input Cin,
+    output S1, S2, S3, S4,
+    output Cout
+    );
+    wire c_in2, c_in3, c_in4;
+
+    somadorUM um (
+        .A(A1),
+        .B(B1),
+        .Cin(Cin),
+        .S(S1),
+        .Cout(c_in2)
+    );
+    somadorUM dois (
+        .A(A2),
+        .B(B2),
+        .Cin(c_in2),
+        .S(S2),
+        .Cout(c_in3)
+    );
+    somadorUM tres (
+        .A(A3),
+        .B(B3),
+        .Cin(c_in3),
+        .S(S3),
+        .Cout(c_in4)
+    );
+    somadorUM quatro (
+        .A(A4),
+        .B(B4),
+        .Cin(c_in4),
+        .S(S4),
+        .Cout(Cout)
+    );
 endmodule
 
-module subtratorQuatro( S1, S2, S3, S4, Cout, A1, B1, A2, B2, A3, B3, A4, B4, Cin);
-input A1, B1, A2, B2, A3, B3, A4, B4, Cin;
-output S1, S2, S3, S4, Cout;
-wire CC;
+module subtratorQuatro(
+    input A1, A2, A3, A4,
+    input B1, B2, B3, B4,
+    input Bin,
+    output D1, D2, D3, D4,
+    output Bout
+    );
+    wire bin2, bin3, bin4;
 
-	somadorUM subUM (
-	.A (!A1),
-	.B (B1),
-	.Cout (CC),
-	.Cin (Cin),
-	.S (S1),
-	);
-	somadorUM subUM (
-	.A (!A2),
-	.B (B2),
-	.Cout (CC),
-	.Cin (Cin),
-	.S (S2),
-	);
-	somadorUM subUM (
-	.A (!A3),
-	.B (B3),
-	.Cout (CC),
-	.Cin (Cin),
-	.S (S3),
-	);
-	somadorUM subUM (
-	.A (!A4),
-	.B (B4),
-	.Cout (CC),
-	.Cin (Cin),
-	.S (S4),
-	);
+
+    somadorUM subUM1 (
+        .A(A1),
+        .B(~B1),
+        .Cin(1'b1), //estou utilizando o somadorUM e complemento de dois para fazer o subtrator.
+        .S(D1), // cin do primeiro bit sempre sera 1.
+        .Cout(bin2)
+    );
+    somadorUM subUM2 (
+        .A(A2),
+        .B(~B2),
+        .Cin(bin2),
+        .S(D2),
+        .Cout(bin3)
+    );
+    somadorUM subUM3 (
+        .A(A3),
+        .B(~B3),
+        .Cin(bin3),
+        .S(D3),
+        .Cout(bin4)
+    );
+    somadorUM subUM4 (
+        .A(A4),
+        .B(~B4),
+        .Cin(bin4),
+        .S(D4),
+        .Cout(Bout)
+    );
+endmodule
 
 module or4bits(S, A,B);
 
