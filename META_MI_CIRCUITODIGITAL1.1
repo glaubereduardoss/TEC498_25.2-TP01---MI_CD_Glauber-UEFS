@@ -25,28 +25,28 @@ module somadorQuatro(
         .Cin(Cin),
         .S(S1),
         .Cout(c_in2)
-    );
+        );
     somadorUM dois (
         .A(A2),
         .B(B2),
         .Cin(c_in2),
         .S(S2),
         .Cout(c_in3)
-    );
+        );
     somadorUM tres (
         .A(A3),
         .B(B3),
         .Cin(c_in3),
         .S(S3),
         .Cout(c_in4)
-    );
+        );
     somadorUM quatro (
         .A(A4),
         .B(B4),
         .Cin(c_in4),
         .S(S4),
         .Cout(Cout)
-    );
+        );
 endmodule
 
 module subtratorQuatro(
@@ -65,28 +65,28 @@ module subtratorQuatro(
         .Cin(1'b1), //estou utilizando o somadorUM e complemento de dois para fazer o subtrator.
         .S(D1), // cin do primeiro bit sempre sera 1.
         .Cout(bin2)
-    );
+        );
     somadorUM subUM2 (
         .A(A2),
         .B(~B2),
         .Cin(bin2),
         .S(D2),
         .Cout(bin3)
-    );
+        );
     somadorUM subUM3 (
         .A(A3),
         .B(~B3),
         .Cin(bin3),
         .S(D3),
         .Cout(bin4)
-    );
+        );
     somadorUM subUM4 (
         .A(A4),
         .B(~B4),
         .Cin(bin4),
         .S(D4),
         .Cout(Bout)
-    );
+        );
 endmodule
 
 module or4bits(S, A,B);
