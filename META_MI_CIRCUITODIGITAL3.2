@@ -1,0 +1,156 @@
+module somadorUM( S, Cout, A, B, Cin);
+	input A, B, Cin;
+	output S, Cout;
+	wire T1, T2, T3;
+	
+	xor Xor0(T1, A, B);
+	and And0(T2, A, b);
+	and And1(T3, T1, Cin);
+	or Or0(Cout, T2, T3);
+	xor Xor1(S, T1, Cin);
+endmodule
+
+module somadorQuatro( S1, S2, S3, S4, Cout, A1, B1, A2, B2, A3, C3, A4, B4, Cin);
+	input C, D, E, F, G, H, I, J, Cin;
+	output S1, S2, S3, S4, Cout;
+	wire CC;
+	
+	somadorUM um (
+	.A (C),
+	.B (D),
+	.Cout (CC),
+	.Cin (Cin),
+	.S (S1),
+	);
+	somadorUM dois (
+	.A (E),
+	.B (F),
+	.Cout (CC),
+	.Cin (Cin),
+	.S (S2),
+	);
+	somadorUM tres (
+	.A (G),
+	.B (H),
+	.Cout (CC),
+	.Cin (Cin),
+	.S (S3),
+	);
+	somadorUM quatro (
+	.A (I),
+	.B (J),
+	.Cout (CC),
+	.Cin (Cin),
+	.S (S4),
+	);
+endmodule
+
+module subtratorQuatro( S1, S2, S3, S4, Cout, A1, B1, A2, B2, A3, B3, A4, B4, Cin);
+input A1, B1, A2, B2, A3, B3, A4, B4, Cin;
+output S1, S2, S3, S4, Cout;
+wire CC;
+
+	somadorUM subUM (
+	.A (!A1),
+	.B (B1),
+	.Cout (CC),
+	.Cin (Cin),
+	.S (S1),
+	);
+	somadorUM subUM (
+	.A (!A2),
+	.B (B2),
+	.Cout (CC),
+	.Cin (Cin),
+	.S (S2),
+	);
+	somadorUM subUM (
+	.A (!A3),
+	.B (B3),
+	.Cout (CC),
+	.Cin (Cin),
+	.S (S3),
+	);
+	somadorUM subUM (
+	.A (!A4),
+	.B (B4),
+	.Cout (CC),
+	.Cin (Cin),
+	.S (S4),
+	);
+
+ module multiplicadorQUATRO (
+    input [3:0] A,
+    input [3:0] B,
+    output P0, P1, P2, P3, P4, P5, P6, P7
+);
+
+    wire p00, p01, p02, p03;
+    wire p10, p11, p12, p13;
+    wire p20, p21, p22, p23;
+    wire p30, p31, p32, p33;
+
+    and (p00, A[0], B[0]);
+    and (p01, A[0], B[1]);
+    and (p02, A[0], B[2]);
+    and (p03, A[0], B[3]);
+    
+    and (p10, A[1], B[0]);
+    and (p11, A[1], B[1]);
+    and (p12, A[1], B[2]);
+    and (p13, A[1], B[3]);
+    
+    and (p20, A[2], B[0]);
+    and (p21, A[2], B[1]);
+    and (p22, A[2], B[2]);
+    and (p23, A[2], B[3]);
+    
+    and (p30, A[3], B[0]);
+    and (p31, A[3], B[1]);
+    and (p32, A[3], B[2]);
+    and (p33, A[3], B[3]);
+
+   
+    and (P0, A[0], B[0]);
+    
+    wire S11, S12, S13, C1;
+    somadorQuatro multUM (
+        .A1(p01), .B1(p10),
+        .A2(p02), .B2(p11),
+        .A3(p03), .B3(p12),
+        .A4(1'b0), .B4(p13),
+        .Cin(1'b0),
+        .S1(P1), 
+        .S2(S11), 
+        .S3(S12),
+        .S4(S13),
+        .Cout(C1)
+    );
+
+    wire S21, S22, S23, C2;
+    somadorQuatro multDOIS(
+        .A1(S11), .B1(p20),
+        .A2(S12), .B2(p21),
+        .A3(S13), .B3(p22),
+        .A4(C1),  .B4(p23),
+        .Cin(1'b0),
+        .S1(P2), 
+        .S2(S21), 
+        .S3(S22),
+        .S4(S23),
+        .Cout(C2)
+    );
+
+    somadorQuatro multTRES (
+        .A1(S21), .B1(p30),
+        .A2(S22), .B2(p31),
+        .A3(S23), .B3(p32),
+        .A4(C2),  .B4(p33),
+        .Cin(1'b0),
+        .S1(P3),
+        .S2(P4),
+        .S3(P5), 
+        .S4(P6),
+        .Cout(P7)
+    );
+endmodule
