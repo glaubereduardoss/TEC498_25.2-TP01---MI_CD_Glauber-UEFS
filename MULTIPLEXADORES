@@ -56,3 +56,214 @@ module mux8PARA1(
     or (Y, and0, and1, and2, and3, and4, and5, and6, and7);
 endmodule
 
+// Módulo Somador de 1 bit
+module somadorUM(S, Cout, A, B, Cin);
+    input A, B, Cin;
+    output S, Cout;
+    wire T1, T2, T3;
+    
+    xor (T1, A, B);
+    and (T2, A, B);
+    and (T3, T1, Cin);
+    or (Cout, T2, T3);
+    xor (S, T1, Cin);
+endmodule
+
+// Módulo Somador de 4 bits - Corrigido
+module somadorQuatro(S1, S2, S3, S4, Cout, A1, B1, A2, B2, A3, B3, A4, B4, Cin);
+    input A1, B1, A2, B2, A3, B3, A4, B4, Cin;
+    output S1, S2, S3, S4, Cout;
+    wire C1, C2, C3;
+    
+    somadorUM um (
+        .A(A1), .B(B1), .Cin(Cin), .S(S1), .Cout(C1)
+    );
+    somadorUM dois (
+        .A(A2), .B(B2), .Cin(C1), .S(S2), .Cout(C2)
+    );
+    somadorUM tres (
+        .A(A3), .B(B3), .Cin(C2), .S(S3), .Cout(C3)
+    );
+    somadorUM quatro (
+        .A(A4), .B(B4), .Cin(C3), .S(S4), .Cout(Cout)
+    );
+endmodule
+
+// Módulo Subtrator de 4 bits - Corrigido
+module subtratorQuatro(S1, S2, S3, S4, Cout, A1, B1, A2, B2, A3, B3, A4, B4, Cin);
+    input A1, B1, A2, B2, A3, B3, A4, B4, Cin;
+    output S1, S2, S3, S4, Cout;
+    wire C1, C2, C3;
+
+    somadorUM subUM1 (
+        .A(A1), .B(~B1), .Cin(Cin), .S(S1), .Cout(C1)
+    );
+    somadorUM subUM2 (
+        .A(A2), .B(~B2), .Cin(C1), .S(S2), .Cout(C2)
+    );
+    somadorUM subUM3 (
+        .A(A3), .B(~B3), .Cin(C2), .S(S3), .Cout(C3)
+    );
+    somadorUM subUM4 (
+        .A(A4), .B(~B4), .Cin(C3), .S(S4), .Cout(Cout)
+    );
+endmodule
+
+// Módulos lógicos
+module and4bits(S, A,B);
+    input [3:0]A;
+    input [3:0]B;
+    output [3:0]S;
+    and(S[0],A[0],B[0]);
+    and(S[1],A[1],B[1]);
+    and(S[2],A[2],B[2]);
+    and(S[3],A[3],B[3]);
+endmodule
+
+module or4bits(S, A,B);
+    input [3:0]A;
+    input [3:0]B;
+    output [3:0]S;
+    or(S[0],A[0],B[0]);
+    or(S[1],A[1],B[1]);
+    or(S[2],A[2],B[2]);
+    or(S[3],A[3],B[3]);
+endmodule
+
+module xor4bits(S, A,B);
+    input [3:0]A;
+    input [3:0]B;
+    output [3:0]S;
+    xor(S[0],A[0],B[0]);
+    xor(S[1],A[1],B[1]);
+    xor(S[2],A[2],B[2]);
+    xor(S[3],A[3],B[3]);
+endmodule
+
+// Módulo multiplicador
+module multiplicadorQUATRO (
+    input [3:0] A,
+    input [3:0] B,
+    output P0, P1, P2, P3, P4, P5, P6, P7
+);
+    wire p00, p01, p02, p03;
+    wire p10, p11, p12, p13;
+    wire p20, p21, p22, p23;
+    wire p30, p31, p32, p33;
+    and (p00, A[0], B[0]); and (p01, A[0], B[1]); and (p02, A[0], B[2]); and (p03, A[0], B[3]);
+    and (p10, A[1], B[0]); and (p11, A[1], B[1]); and (p12, A[1], B[2]); and (p13, A[1], B[3]);
+    and (p20, A[2], B[0]); and (p21, A[2], B[1]); and (p22, A[2], B[2]); and (p23, A[2], B[3]);
+    and (p30, A[3], B[0]); and (p31, A[3], B[1]); and (p32, A[3], B[2]); and (p33, A[3], B[3]);
+    and (P0, A[0], B[0]);
+    wire S11, S12, S13, C1;
+    somadorQuatro multUM (
+        .A1(p01), .B1(p10), .A2(p02), .B2(p11), .A3(p03), .B3(p12), .A4(p13), .B4(1'b0), .Cin(1'b0),
+        .S1(P1), .S2(S11), .S3(S12), .S4(S13), .Cout(C1)
+    );
+    wire S21, S22, S23, C2;
+    somadorQuatro multDOIS(
+        .A1(S11), .B1(p20), .A2(S12), .B2(p21), .A3(S13), .B3(p22), .A4(C1), .B4(p23), .Cin(1'b0),
+        .S1(P2), .S2(S21), .S3(S22), .S4(S23), .Cout(C2)
+    );
+    somadorQuatro multTRES (
+        .A1(S21), .B1(p30), .A2(S22), .B2(p31), .A3(S23), .B3(p32), .A4(C2), .B4(p33), .Cin(1'b0),
+        .S1(P3), .S2(P4), .S3(P5), .S4(P6), .Cout(P7)
+    );
+endmodule
+
+// Módulos multiplexadores
+module multiplexador8PARA1(
+    input I0, I1, I2, I3, I4, I5, I6, I7,
+    input S2, S1, S0,
+    output Y
+);
+    wire not_S2, not_S1, not_S0;
+    wire and0, and1, and2, and3, and4, and5, and6, and7;
+    not (not_S2, S2);
+    not (not_S1, S1);
+    not (not_S0, S0);
+    and (and0, not_S2, not_S1, not_S0, I0);
+    and (and1, not_S2, not_S1, S0, I1);
+    and (and2, not_S2, S1, not_S0, I2);
+    and (and3, not_S2, S1, S0, I3);
+    and (and4, S2, not_S1, not_S0, I4);
+    and (and5, S2, not_S1, S0, I5);
+    and (and6, S2, S1, not_S0, I6);
+    and (and7, S2, S1, S0, I7);
+    or (Y, and0, and1, and2, and3, and4, and5, and6, and7);
+endmodule
+
+module mux8to1_8bit_adap(
+    input [7:0] I0, I1, I2, I3, I4, I5, I6, I7,
+    input [2:0] S,
+    output [7:0] Y
+);
+    multiplexador8PARA1 mux_bit0 (.I0(I0[0]), .I1(I1[0]), .I2(I2[0]), .I3(I3[0]), .I4(I4[0]), .I5(I5[0]), .I6(I6[0]), .I7(I7[0]), .S2(S[2]), .S1(S[1]), .S0(S[0]), .Y(Y[0]));
+    multiplexador8PARA1 mux_bit1 (.I0(I0[1]), .I1(I1[1]), .I2(I2[1]), .I3(I3[1]), .I4(I4[1]), .I5(I5[1]), .I6(I6[1]), .I7(I7[1]), .S2(S[2]), .S1(S[1]), .S0(S[0]), .Y(Y[1]));
+    multiplexador8PARA1 mux_bit2 (.I0(I0[2]), .I1(I1[2]), .I2(I2[2]), .I3(I3[2]), .I4(I4[2]), .I5(I5[2]), .I6(I6[2]), .I7(I7[2]), .S2(S[2]), .S1(S[1]), .S0(S[0]), .Y(Y[2]));
+    multiplexador8PARA1 mux_bit3 (.I0(I0[3]), .I1(I1[3]), .I2(I2[3]), .I3(I3[3]), .I4(I4[3]), .I5(I5[3]), .I6(I6[3]), .I7(I7[3]), .S2(S[2]), .S1(S[1]), .S0(S[0]), .Y(Y[3]));
+    multiplexador8PARA1 mux_bit4 (.I0(I0[4]), .I1(I1[4]), .I2(I2[4]), .I3(I3[4]), .I4(I4[4]), .I5(I5[4]), .I6(I6[4]), .I7(I7[4]), .S2(S[2]), .S1(S[1]), .S0(S[0]), .Y(Y[4]));
+    multiplexador8PARA1 mux_bit5 (.I0(I0[5]), .I1(I1[5]), .I2(I2[5]), .I3(I3[5]), .I4(I4[5]), .I5(I5[5]), .I6(I6[5]), .I7(I7[5]), .S2(S[2]), .S1(S[1]), .S0(S[0]), .Y(Y[5]));
+    multiplexador8PARA1 mux_bit6 (.I0(I0[6]), .I1(I1[6]), .I2(I2[6]), .I3(I3[6]), .I4(I4[6]), .I5(I5[6]), .I6(I6[6]), .I7(I7[6]), .S2(S[2]), .S1(S[1]), .S0(S[0]), .Y(Y[6]));
+    multiplexador8PARA1 mux_bit7 (.I0(I0[7]), .I1(I1[7]), .I2(I2[7]), .I3(I3[7]), .I4(I4[7]), .I5(I5[7]), .I6(I6[6]), .I7(I7[7]), .S2(S[2]), .S1(S[1]), .S0(S[0]), .Y(Y[7]));
+endmodule
+
+// Módulo Seletor Final
+module Seletor (
+    input [3:0] A,
+    input [3:0] B,
+    output [7:0] S,
+    input [2:0] Sel,
+    input Cin,
+    output Cout
+);
+    wire [3:0] saida_soma, saida_sub, saida_and, saida_or, saida_xor;
+    wire cout_soma, cout_sub;
+    wire [7:0] saida_mult;
+    
+    somadorQuatro somador(
+        .A1(A[0]), .B1(B[0]), .A2(A[1]), .B2(B[1]), .A3(A[2]), .B3(B[2]), .A4(A[3]), .B4(B[3]),
+        .Cin(Cin), .S1(saida_soma[0]), .S2(saida_soma[1]), .S3(saida_soma[2]), .S4(saida_soma[3]), .Cout(cout_soma)
+    );
+    subtratorQuatro subtrator(
+        .A1(A[0]), .B1(B[0]), .A2(A[1]), .B2(B[1]), .A3(A[2]), .B3(B[2]), .A4(A[3]), .B4(B[3]),
+        .Cin(Cin), .S1(saida_sub[0]), .S2(saida_sub[1]), .S3(saida_sub[2]), .S4(saida_sub[3]), .Cout(cout_sub)
+    );
+    
+    multiplicadorQUATRO mult_op (
+        .A(A), .B(B),
+        .P0(saida_mult[0]), .P1(saida_mult[1]), .P2(saida_mult[2]), .P3(saida_mult[3]),
+        .P4(saida_mult[4]), .P5(saida_mult[5]), .P6(saida_mult[6]), .P7(saida_mult[7])
+    );
+	 
+	 //FALTA O DIVISOR
+    
+    wire [7:0] entrada_and = {4'b0, saida_and};
+    wire [7:0] entrada_or = {4'b0, saida_or};
+    wire [7:0] entrada_xor = {4'b0, saida_xor};
+    wire [7:0] entrada_soma = {4'b0, saida_soma};
+    wire [7:0] entrada_sub = {4'b0, saida_sub};
+
+    mux8to1_8bit_adap mux_out (
+        .Y(S),
+        .I0(entrada_soma),
+        .I1(entrada_sub),
+        .I2(entrada_and),
+        .I3(entrada_or),
+        .I4(entrada_xor),
+        .I5(saida_mult),
+        .I6({8{1'b0}}), // ZERAR PQ NAO TENHO DIVIDOR
+        .S(Sel)
+    );
+    
+    wire cout_soma_selected, cout_sub_selected;
+    wire not_S2, not_S1, not_S0;
+    not(not_S2, Sel[2]);
+    not(not_S1, Sel[1]);
+    not(not_S0, Sel[0]);
+
+    and(cout_soma_selected, not_S2, not_S1, not_S0, cout_soma);
+    and(cout_sub_selected, not_S2, not_S1, S[0], cout_sub);
+
+    or(Cout, cout_soma_selected, cout_sub_selected);
+endmodule
