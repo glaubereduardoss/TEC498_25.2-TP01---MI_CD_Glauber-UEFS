@@ -1,0 +1,58 @@
+module mux2PARA1(
+    input I0, I1, 
+    input S,      
+    output Y      
+);
+    wire not_S;
+    wire and0, and1;
+
+    not (not_S, S);
+
+    and (and0, not_S, I0);
+    and (and1, S, I1);
+
+    or (Y, and0, and1);
+endmodule
+
+module mux4PARA1(
+    input I0, I1, I2, I3,
+    input S1, S0,        
+    output Y             
+);
+    wire not_S1, not_S0;
+    wire and0, and1, and2, and3;
+
+    not (not_S1, S1);
+    not (not_S0, S0);
+
+    and (and0, not_S1, not_S0, I0);
+    and (and1, not_S1, S0, I1);
+    and (and2, S1, not_S0, I2);
+    and (and3, S1, S0, I3);
+    or (Y, and0, and1, and2, and3);
+endmodule
+
+module mux8PARA1(
+    input I0, I1, I2, I3, I4, I5, I6, I7, 
+    input S2, S1, S0,        
+    output Y           
+);
+    wire not_S2, not_S1, not_S0;
+    wire and0, and1, and2, and3, and4, and5, and6, and7;
+
+    not (not_S2, S2);
+    not (not_S1, S1);
+    not (not_S0, S0);
+
+    and (and0, not_S2, not_S1, not_S0, I0);
+    and (and1, not_S2, not_S1, S0, I1);
+    and (and2, not_S2, S1, not_S0, I2);
+    and (and3, not_S2, S1, S0, I3);
+    and (and4, S2, not_S1, not_S0, I4);
+    and (and5, S2, not_S1, S0, I5);
+    and (and6, S2, S1, not_S0, I6);
+    and (and7, S2, S1, S0, I7);
+
+    or (Y, and0, and1, and2, and3, and4, and5, and6, and7);
+endmodule
+
